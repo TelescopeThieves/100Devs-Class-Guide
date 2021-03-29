@@ -17,23 +17,35 @@ async function lessonSearch(){
     const watchSection = document.querySelector('#watchSection')
     const readSection = document.querySelector('#readSection')
     const doSection = document.querySelector('#doSection')
+    const slidesSection = document.querySelector('#slidesSection')
     try{
         const response = await fetch(`https://onehundreddevs-class-guide.herokuapp.com/api/${week}`)
         const data = await response.json()
-        // console.log(data)
+
+        //add week header
         document.querySelector('#weekHeader').innerText = data['name']
 
+        // add tagline 
         document.querySelector('#tagline').innerText = data.tagline
         document.querySelector('#tagline').classList.add('paddingT')
+
         // input links for classes and slides
         document.querySelector('#class01').href = data['class_01']
         document.querySelector('#class02').href = data['class_02']
 
-        
+        function removeAllChildNodes(parent) {
+            while (parent.firstChild) {
+                parent.removeChild(parent.firstChild);
+            }
+        }
         // update watch section
         if(data.watch){
+            removeAllChildNodes(watchSection)
+            
             document.querySelector('#watchHeader').innerText = 'Watch:'
+            
             let arr = Object.values(data.watch)
+                        
             arr.forEach(video => {
                 const anchorTag = document.createElement('a')
                 anchorTag.setAttribute('href', video.link)
@@ -43,8 +55,12 @@ async function lessonSearch(){
             })
         }
         if(data.readings){
+            removeAllChildNodes(readSection)
+            
             document.querySelector('#readHeader').innerText = 'Read:'
+            
             let arr = Object.values(data.readings)
+            
             arr.forEach(text => {
                 const anchorTag = document.createElement('a')
                 anchorTag.setAttribute('href', text.link)
@@ -54,17 +70,20 @@ async function lessonSearch(){
             }) 
         }
         if(data.do){
+            removeAllChildNodes(doSection)
+
             document.querySelector('#doHeader').innerText = 'Do:'
+
             for(let key in data.do){
                 const anchorTag = document.createElement('a')
                 anchorTag.setAttribute('href', data.do[key])
                 anchorTag.setAttribute('target', '_blank')
                 anchorTag.innerText = `${data.do[key]}`
-                doSection.appendChild(anchorTag).classList.add('paddingT')
-                // console.log(data.do[key])
+
             }
         }
         if(data.slides_01){
+            removeAllChildNodes(slidesSection)
             document.querySelector('#slidesHeader').innerText = 'Slides:'
             const anchorTag = document.createElement('a')
             anchorTag.setAttribute('href', data.slides_01)
